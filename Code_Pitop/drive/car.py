@@ -16,7 +16,7 @@ motor_right.braking_type = BrakingType.COAST
 
 cam = Camera(format="OpenCV")
 
-img_counter = 0
+img_counter = 127
 
 def turn(steering_angle):                                
     default_speed = 0.2
@@ -44,14 +44,13 @@ cam.on_frame = image.run
 
 try:
     while True:
-        sleep(0.7)
+        sleep(0.8) #0.7 buggy
         frame = cam.get_frame()
 
         #TODO: python check for keyboard input
-        k = cv2.waitKey(1)
-        if k%256 == 32:
-            cv2.imwrite("/home/pi/Documents/train_data/frame_{}.png".format(img_counter), frame)
-            img_counter += 1
+       
+        cv2.imwrite("/home/pi/Documents/repo/Wall-E/Bilder/keine_Schilder/frame_{}.png".format(img_counter), frame)
+        img_counter += 1
 
         steering_angle = image.run(frame)
 
