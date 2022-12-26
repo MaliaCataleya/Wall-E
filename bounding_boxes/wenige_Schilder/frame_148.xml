@@ -1,0 +1,26 @@
+<annotation>
+	<folder>weniger_Schilder</folder>
+	<filename>frame_148.png</filename>
+	<path>/Users/sarahmauff/Documents/HdM/WS2022:23/Wall-E/Wall-E/Bilder/weniger_Schilder/frame_148.png</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>640</width>
+		<height>480</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>stop</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>64</xmin>
+			<ymin>93</ymin>
+			<xmax>84</xmax>
+			<ymax>132</ymax>
+		</bndbox>
+	</object>
+</annotation>
