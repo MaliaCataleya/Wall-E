@@ -56,9 +56,9 @@ def loopDrive(steering_angle, cam):
     #thread this
     steering_angle = processFrame(cam)
     
-    #start of thread
-    with Pool() as mp_pool:
-        steering_angle = mp_pool.map(processFrame, cam)
+    #start of thread - uncomment 60 and 61 or comment 57
+    #with Pool() as mp_pool:
+    #    steering_angle = mp_pool.map(processFrame, cam)
     #end of thread -- Alternative: processFrame in turn Funktion
     
     loopDrive(steering_angle)
