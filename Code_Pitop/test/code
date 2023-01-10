@@ -1,0 +1,26 @@
+
+#turn
+"""  if steering_angle >= 100:
+        start = time.time()
+        robot.drive.left(0.1)
+        if (time.time() - start >= 0.5):
+            robot.drive.stop_rotation()
+            robot.drive.backward(0.25, hold=True)
+    elif steering_angle <= 80:
+        start = time.time()
+        robot.drive.right(0.1)
+        if (time.time() - start >= 0.5):
+            robot.drive.stop_rotation()
+            robot.drive.backward(0.25, hold=True)
+    else:
+        robot.drive.stop_rotation()
+        robot.drive.backward(0.25, hold=True) """
+
+
+""" def run(frame):
+    steering_angle = image.run(frame)
+    turn(steering_angle) """
+
+#cam.on_frame = run
+
+#pause()

@@ -33,11 +33,11 @@ def turn(steering_angle):
             speed = 0.447
 
         if steering_angle >= 90:
-            motor_right.forward(speed, 0.08) 
-            motor_left.forward(default_speed, 0.08)
+            motor_right.forward(speed, 0.02) 
+            motor_left.forward(default_speed, 0.02) #0.08
         else:            
-            motor_left.forward(speed, 0.08)
-            motor_right.forward(default_speed, 0.08)
+            motor_left.forward(speed, 0.02)
+            motor_right.forward(default_speed, 0.02)
     else:
         motor_left.forward(default_speed, 0.2)
         motor_right.forward(default_speed, 0.2)
@@ -53,7 +53,9 @@ def processFrame(cam):
 def loopDrive(steering_angle, cam):
     turn(steering_angle)
     
+    s
     #thread this
+    loop
     steering_angle = processFrame(cam)
     
     #start of thread - uncomment 60 and 61 or comment 57
@@ -61,7 +63,7 @@ def loopDrive(steering_angle, cam):
     #    steering_angle = mp_pool.map(processFrame, cam)
     #end of thread -- Alternative: processFrame in turn Funktion
     
-    loopDrive(steering_angle)
+    loopDrive(steering_angle, cam)
     
 # run program   
    
