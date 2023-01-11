@@ -22,7 +22,7 @@ motor_right.braking_type = BrakingType.COAST
 
 cam = Camera(format="OpenCV")
 
-#img_counter = 127
+img_counter = 50
 
 def turn(steering_angle):  
     default_speed = 0.22
@@ -36,7 +36,7 @@ def turn(steering_angle):
         if speed > 0.447:
             speed = 0.447
         
-        curve = 0.07
+        curve = 0.08
 
         if steering_angle >= 90:
             motor_right.forward(speed, curve) 
@@ -57,8 +57,8 @@ try:
 
             #TODO: python check for keyboard input
        
-            #cv2.imwrite("/home/pi/Documents/repo/Wall-E/Bilder/keine_Schilder/frame_{}.png".format(img_counter), frame)
-            #img_counter += 1
+            cv2.imwrite("/home/pi/Documents/Bilder/train/frame_{}.png".format(img_counter), frame)
+            img_counter += 1
 
             steering_angle = image.run(frame)
 
