@@ -57,7 +57,7 @@ try:
 
             #TODO: python check for keyboard input
        
-            cv2.imwrite("/home/pi/Documents/Bilder/train/frame_{}.png".format(img_counter), frame)
+            cv2.imwrite("/home/pi/Documents/Bilder/train/frame_{}.jpg".format(img_counter), frame)
             img_counter += 1
 
             steering_angle = image.run(frame)
