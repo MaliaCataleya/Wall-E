@@ -8,6 +8,9 @@ import time
 from pitop import BrakingType, EncoderMotor, ForwardDirection
 
 import image
+import detect 
+
+from PIL import Image
 
 motor_left = EncoderMotor("M3", ForwardDirection.COUNTER_CLOCKWISE)
 motor_right = EncoderMotor("M0", ForwardDirection.CLOCKWISE)
@@ -22,10 +25,10 @@ motor_right.braking_type = BrakingType.COAST
 
 cam = Camera(format="OpenCV")
 
-img_counter = 50
+img_counter = 10
 
 def turn(steering_angle):  
-    default_speed = 0.22
+    default_speed = 0.2
     delta_degree = abs(steering_angle-90)
 
     if delta_degree > 15:
@@ -57,8 +60,11 @@ try:
 
             #TODO: python check for keyboard input
        
-            cv2.imwrite("/home/pi/Documents/Bilder/train/frame_{}.jpg".format(img_counter), frame)
-            img_counter += 1
+            #cv2.imwrite("/home/pi/Documents/repo/Wall-E/Bilder/train/frame_{}.jpg".format(img_counter), frame)
+            #img_counter += 1
+
+            #detection_result = detect.run("/home/pi/Documents/repo/Wall-E/Code_Pitop/drive/schilder.tflite", frame, 640, 480, 3, False)
+            #print(detection_result)
 
             steering_angle = image.run(frame)
 

@@ -2,6 +2,8 @@ import math
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
+from pitop import Camera
+
 
 
 def make_coordinates(image, line_parameters):
@@ -43,7 +45,7 @@ def canny(image):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     blurred = cv2.GaussianBlur(gray, (3, 3), 0)
 
-    canny = cv2.Canny(blurred, 251, 392) #260, 300 330, 427
+    canny = cv2.Canny(blurred, 250, 300) #260, 300 330, 427   251, 392
     return canny
 
 def display_lines(image, lines):
@@ -51,7 +53,14 @@ def display_lines(image, lines):
     if lines is not None:
         for line in lines:
             x1, y1, x2, y2 = line.reshape(4)
-            cv2.line(line_img, (x1, y1), (x2, y2), (255, 0, 0), 10)
+            try:
+                cv2.line(line_img, (x1, y1), (x2, y2), (255, 0, 0), 10)
+            except:
+                #duct tape
+                #import sys
+                #if x1, x2, y1, y2 >sy.maxsize:
+                #x1 = sys.maxsize
+                print("Error: x1: ", x1, "x2: ", x2, "y1: ", y1, "y2: ", y2)
     return line_img
 
 def region_of_interest(image, width, height):
@@ -123,12 +132,17 @@ def run(image):
     x_offset, y_offset = calculate_offset(averaged_lines, width, height)
     steering_angle = calculate_steering_angle(x_offset, y_offset)
 
-    #line_img = display_lines(lane_img, averaged_lines)
-    #combo_img = cv2.addWeighted(lane_img, 0.8, line_img, 1, 1)
-    #heading_img = display_heading_line(combo_img, steering_angle, (0, 0, 255), 10)
-    """ 
-    cv2.imshow("cam", heading_img)
+    line_img = display_lines(lane_img, averaged_lines)
+    combo_img = cv2.addWeighted(lane_img, 0.8, line_img, 1, 1)
+    heading_img = display_heading_line(combo_img, steering_angle, (0, 0, 255), 10)
+
+    """ cv2.imshow("cam", heading_img)
     cv2.waitKey(0) """
-    print("steering angle: ", steering_angle)
+
+    print("steering angle: ", steering_angle) 
 
     return steering_angle
+
+""" cam = Camera(format="OpenCV")
+frame = cam.get_frame()
+steering = run(frame) """
