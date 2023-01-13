@@ -25,7 +25,7 @@ motor_right.braking_type = BrakingType.COAST
 
 cam = Camera(format="OpenCV")
 
-img_counter = 10
+img_counter = 484
 
 def turn(steering_angle):  
     default_speed = 0.2
@@ -55,13 +55,11 @@ def turn(steering_angle):
 try:
     start = time.time()
     while True:
-        if (time.time() - start >= 0.8):
+        if (time.time() - start >= 0.7):
             frame = cam.get_frame()
-
-            #TODO: python check for keyboard input
        
-            #cv2.imwrite("/home/pi/Documents/repo/Wall-E/Bilder/train/frame_{}.jpg".format(img_counter), frame)
-            #img_counter += 1
+            cv2.imwrite("/home/pi/Documents/repo/Wall-E/Bilder/train/frame_{}.jpg".format(img_counter), frame)
+            img_counter += 1
 
             #detection_result = detect.run("/home/pi/Documents/repo/Wall-E/Code_Pitop/drive/schilder.tflite", frame, 640, 480, 3, False)
             #print(detection_result)

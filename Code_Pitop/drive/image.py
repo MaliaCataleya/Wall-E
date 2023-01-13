@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 from pitop import Camera
 
 
-
 def make_coordinates(image, line_parameters):
     slope, intercept = line_parameters
     y1 = image.shape[0]
@@ -42,10 +41,22 @@ def average_slope_intercept(image, lines):
     return np.array([left_line, right_line])
 
 def canny(image):
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+    """ ower_yellow = np.array([30, 0, 0])
+    upper_yellow = ([30, 255, 255]) """
+    lower_yellow = np.array([20, 50, 100])
+    upper_yellow = ([30, 255, 255])
+    mask = cv2.inRange(hsv, np.float32(lower_yellow), np.float32(upper_yellow))
+    result = cv2.bitwise_and(image, image, mask=mask)
+    """ cv2.imshow("cam", result)
+    cv2.waitKey(0) """
+    gray = cv2.cvtColor(result, cv2.COLOR_BGR2GRAY)
+    """ cv2.imshow("cam", gray)
+    cv2.waitKey(0) """
     blurred = cv2.GaussianBlur(gray, (3, 3), 0)
-
-    canny = cv2.Canny(blurred, 250, 300) #260, 300 330, 427   251, 392
+    """ cv2.imshow("cam", blurred)
+    cv2.waitKey(0) """
+    canny = cv2.Canny(blurred, 190, 255, L2gradient=True) #260, 300 330, 427   251, 392   250, 300
     return canny
 
 def display_lines(image, lines):
@@ -64,7 +75,7 @@ def display_lines(image, lines):
     return line_img
 
 def region_of_interest(image, width, height):
-    polygon = np.array([[(0, height), (width, height), (width, 250), (0, 250)]])
+    polygon = np.array([[(0, height), (width, height), (width, 100), (0, 100)]])
     mask = np.zeros_like(image)
     cv2.fillPoly(mask, polygon, 255)
     masked_image = cv2.bitwise_and(image, mask)
@@ -125,6 +136,8 @@ def run(image):
     canny_img = canny(lane_img)
 
     cropped_img = region_of_interest(canny_img, width, height)
+    """ cv2.imshow("cam", cropped_img)
+    cv2.waitKey(0) """
     lines = cv2.HoughLinesP(cropped_img, 1, np.pi/180, threshold=50, minLineLength=10, maxLineGap=10)
 
     averaged_lines = average_slope_intercept(lane_img, lines)
