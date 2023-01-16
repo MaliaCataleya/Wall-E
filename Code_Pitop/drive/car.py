@@ -25,7 +25,7 @@ motor_right.braking_type = BrakingType.COAST
 
 cam = Camera(format="OpenCV")
 
-img_counter = 484
+img_counter = 857
 
 def turn(steering_angle):  
     default_speed = 0.2
