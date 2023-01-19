@@ -42,10 +42,12 @@ def average_slope_intercept(image, lines):
 
 def canny(image):
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-    """ ower_yellow = np.array([30, 0, 0])
+    """ lower_yellow = np.array([20, 70, 0])
     upper_yellow = ([30, 255, 255]) """
-    lower_yellow = np.array([20, 50, 100])
+    lower_yellow = np.array([20, 50, 100]) #best one yet
     upper_yellow = ([30, 255, 255])
+    """ lower_yellow = np.array([20, 80, 100])
+    upper_yellow = ([30, 255, 255]) """
     mask = cv2.inRange(hsv, np.float32(lower_yellow), np.float32(upper_yellow))
     result = cv2.bitwise_and(image, image, mask=mask)
     """ cv2.imshow("cam", result)
@@ -56,7 +58,7 @@ def canny(image):
     blurred = cv2.GaussianBlur(gray, (3, 3), 0)
     """ cv2.imshow("cam", blurred)
     cv2.waitKey(0) """
-    canny = cv2.Canny(blurred, 190, 255, L2gradient=True) #260, 300 330, 427   251, 392   250, 300
+    canny = cv2.Canny(blurred, 190, 255, L2gradient=True) #260, 300 330, 427   251, 392   250, 300 -->      190/ 220, 255
     return canny
 
 def display_lines(image, lines):
@@ -152,7 +154,7 @@ def run(image):
     """ cv2.imshow("cam", heading_img)
     cv2.waitKey(0) """
 
-    print("steering angle: ", steering_angle) 
+    #print("steering angle: ", steering_angle) 
 
     return steering_angle
 
