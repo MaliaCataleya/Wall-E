@@ -12,25 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import argparse
-import sys
-import time
-
 import cv2
 from tflite_support.task import core
 from tflite_support.task import processor
 from tflite_support.task import vision
-import utils
 
 
-def run(model, frame, width, height, num_threads, enable_edgetpu):
+def run(model, frame, num_threads, enable_edgetpu):
   """Continuously run inference on images acquired from the camera.
 
   Args:
     model: Name of the TFLite object detection model.
     camera_id: The camera id to be passed to OpenCV.
-    width: The width of the frame captured from the camera.
-    height: The height of the frame captured from the camera.
     num_threads: The number of CPU threads to run the model.
     enable_edgetpu: True/False whether the model is a EdgeTPU model.
   """

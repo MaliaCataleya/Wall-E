@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from pitop import Camera
 
-
+# Definieren der äußersten Punkte
 def make_coordinates(image, line_parameters):
     slope, intercept = line_parameters
     y1 = image.shape[0]
@@ -13,52 +13,57 @@ def make_coordinates(image, line_parameters):
     x2 = int((y2 - intercept)/slope)
     return np.array([x1, y1, x2, y2])
 
-##TODO: linke, rechte seite getrennt? --> höchstes und niedrigstes jeweils nehmen und linie ziehen!! --> fehler bei average slope
-
+# Definieren/ Ziehen der gemittelten Linien
 def average_slope_intercept(image, lines):
     left_fit = []
     right_fit = []
     for line in lines:
         x1, y1, x2, y2 = line.reshape(4)
-
         parameters = np.polyfit((x1, x2), (y1, y2), 1)
         slope = parameters[0]
         intercept = parameters[1]
-        if slope < 0:
+
+        if slope < 0: # Check, ob steigend oder fallend --> linke oder rechte Seite
             left_fit.append((slope, intercept))
         else:
             right_fit.append((slope, intercept))
+
     if left_fit:
         left_fit_average = np.average(left_fit, axis=0)
         left_line = make_coordinates(image, left_fit_average)
     else:
         left_line = np.array([0, 0, 0, 0])
+
     if right_fit:
         right_fit_average = np.average(right_fit, axis=0)
         right_line = make_coordinates(image, right_fit_average)
     else:
         right_line = np.array([0, 0, 0, 0])
+
     return np.array([left_line, right_line])
 
+# Kantenerkennung
 def canny(image):
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+    
+    # Definition gelber Farbraum
+    lower_yellow = np.array([20, 50, 100]) # bisher bestes Ergebnis 
+    upper_yellow = ([30, 255, 255])
+
+    # alternative Farbräume, falls Lichtverhältnis nicht mit oberem kompatibel
     """ lower_yellow = np.array([20, 70, 0])
     upper_yellow = ([30, 255, 255]) """
-    lower_yellow = np.array([20, 50, 100]) #best one yet
-    upper_yellow = ([30, 255, 255])
     """ lower_yellow = np.array([20, 80, 100])
     upper_yellow = ([30, 255, 255]) """
+
+    # Filtern gelber Farbinhalte (nur Straßenmarkierungen)
     mask = cv2.inRange(hsv, np.float32(lower_yellow), np.float32(upper_yellow))
     result = cv2.bitwise_and(image, image, mask=mask)
-    """ cv2.imshow("cam", result)
-    cv2.waitKey(0) """
+
+    # Vorbereitungen für Canny Edge Detection
     gray = cv2.cvtColor(result, cv2.COLOR_BGR2GRAY)
-    """ cv2.imshow("cam", gray)
-    cv2.waitKey(0) """
     blurred = cv2.GaussianBlur(gray, (3, 3), 0)
-    """ cv2.imshow("cam", blurred)
-    cv2.waitKey(0) """
-    canny = cv2.Canny(blurred, 190, 255, L2gradient=True) #260, 300 330, 427   251, 392   250, 300 -->      190/ 220, 255
+    canny = cv2.Canny(blurred, 190, 255, L2gradient=True) # Canny Edge Detection (190 und 255 stellen oberen und unteren threshold dar --> siehe Dokumentation)
     return canny
 
 def display_lines(image, lines):
@@ -71,11 +76,12 @@ def display_lines(image, lines):
             except:
                 #duct tape
                 #import sys
-                #if x1, x2, y1, y2 >sy.maxsize:
+                #if x1, x2, y1, y2 > sys.maxsize:
                 #x1 = sys.maxsize
                 print("Error: x1: ", x1, "x2: ", x2, "y1: ", y1, "y2: ", y2)
     return line_img
 
+# Entfernen unwichtiger Inhalte
 def region_of_interest(image, width, height):
     polygon = np.array([[(0, height), (width, height), (width, 100), (0, 100)]])
     mask = np.zeros_like(image)
@@ -83,6 +89,7 @@ def region_of_interest(image, width, height):
     masked_image = cv2.bitwise_and(image, mask)
     return masked_image
 
+# Handler, wenn beide Fahrbanmarkierungen erkannt wurden
 def two_lines_detected(lines, width, height):
     _, _, left_x2, _ = lines[0]
     _, _, right_x2, _ = lines[1]
@@ -91,6 +98,7 @@ def two_lines_detected(lines, width, height):
     y_offset = int(height / 2)
     return x_offset, y_offset
 
+# Handler, wenn nur eine Fahrbahnmarkierung erkannt wurde
 def one_line_detected(lines, height):
     if lines[0].any():
         x1, _, x2, _ = lines[0]
@@ -102,6 +110,7 @@ def one_line_detected(lines, height):
         y_offset = int(height / 2)
     return x_offset, y_offset
 
+# Berechnung Richtungspunkt
 def calculate_offset(lines, width, height):
     if not lines[0].any() and not lines[1].any():
         print("ERROR: NO LINES DETECTED ---------------------------------")
@@ -112,12 +121,14 @@ def calculate_offset(lines, width, height):
         x_offset, y_offset = two_lines_detected(lines, width, height)
     return x_offset, y_offset
 
+# Berechnung Lenkwinkel
 def calculate_steering_angle(x_offset, y_offset):
     angle_to_mid_radian = math.atan(x_offset / y_offset)  # angle (in radian) to center vertical line
     angle_to_mid_deg = int(angle_to_mid_radian * 180.0 / math.pi)  # angle (in degrees) to center vertical line
     steering_angle = angle_to_mid_deg + 90  # this is the steering angle needed by picar front wheel
     return steering_angle
 
+# Darstellung der gemittelten Richtungslinie
 def display_heading_line(image, steering_angle, line_color=(0, 0, 255), line_width=5 ):
     heading_image = np.zeros_like(image)
     height, width, _ = image.shape
@@ -135,29 +146,36 @@ def run(image):
     width = image.shape[1]
 
     lane_img = np.copy(image)
+
+    # Ecken erkennen
     canny_img = canny(lane_img)
 
+    # unwichtige Inhalte abschneiden
     cropped_img = region_of_interest(canny_img, width, height)
-    """ cv2.imshow("cam", cropped_img)
-    cv2.waitKey(0) """
+
+    # Ziehen der Linien
     lines = cv2.HoughLinesP(cropped_img, 1, np.pi/180, threshold=50, minLineLength=10, maxLineGap=10)
 
+    # erkannte Linien mitteln
     averaged_lines = average_slope_intercept(lane_img, lines)
 
+    # Berechnung anzusteuernder Punkt (Richtungspunkt)
     x_offset, y_offset = calculate_offset(averaged_lines, width, height)
+
+    # Berechnung Lenkwinkel
     steering_angle = calculate_steering_angle(x_offset, y_offset)
 
-    line_img = display_lines(lane_img, averaged_lines)
+    # entkommentieren, wenn Linien bildlich angezeigt werden sollen --> sinnvoll beim Debuggen
+    """ line_img = display_lines(lane_img, averaged_lines)
     combo_img = cv2.addWeighted(lane_img, 0.8, line_img, 1, 1)
-    heading_img = display_heading_line(combo_img, steering_angle, (0, 0, 255), 10)
+    heading_img = display_heading_line(combo_img, steering_angle, (0, 0, 255), 10) """
 
     """ cv2.imshow("cam", heading_img)
     cv2.waitKey(0) """
 
-    #print("steering angle: ", steering_angle) 
-
     return steering_angle
 
+# entkommentieren, wenn nur image.py ausgeführt werden soll/ Wall-E nicht fahren soll
 """ cam = Camera(format="OpenCV")
 frame = cam.get_frame()
 steering = run(frame) """
