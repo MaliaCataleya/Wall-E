@@ -162,11 +162,11 @@ def run(image):
 
     # Ecken erkennen
     canny_img = canny(lane_img)
-    cv2.imwrite("/home/pi/Documents/repo/Wall-E/Code_Pitop/Pictures/canny2.png", canny_img)
+    #cv2.imwrite("/home/pi/Documents/repo/Wall-E/Code_Pitop/Pictures/canny2.png", canny_img)
 
     # unwichtige Inhalte abschneiden
     cropped_img = region_of_interest(canny_img, width, height)
-    cv2.imwrite("/home/pi/Documents/repo/Wall-E/Code_Pitop/Pictures/cropped2.png", cropped_img)
+    #cv2.imwrite("/home/pi/Documents/repo/Wall-E/Code_Pitop/Pictures/cropped2.png", cropped_img)
 
     # Ziehen der Linien
     lines = cv2.HoughLinesP(cropped_img, 1, np.pi/180, threshold=50, minLineLength=10, maxLineGap=10)
@@ -181,12 +181,12 @@ def run(image):
     steering_angle = calculate_steering_angle(x_offset, y_offset)
 
     # entkommentieren, wenn Linien bildlich angezeigt werden sollen --> sinnvoll beim Debuggen
-    line_img = display_lines(lane_img, averaged_lines)
-    cv2.imwrite("/home/pi/Documents/repo/Wall-E/Code_Pitop/Pictures/lines2.png", line_img)
+    """ line_img = display_lines(lane_img, averaged_lines)
+    #cv2.imwrite("/home/pi/Documents/repo/Wall-E/Code_Pitop/Pictures/lines2.png", line_img)
     combo_img = cv2.addWeighted(lane_img, 0.8, line_img, 1, 1)
-    cv2.imwrite("/home/pi/Documents/repo/Wall-E/Code_Pitop/Pictures/combo2.png", combo_img)
+    #cv2.imwrite("/home/pi/Documents/repo/Wall-E/Code_Pitop/Pictures/combo2.png", combo_img)
     heading_img = display_heading_line(combo_img, steering_angle, (0, 0, 255), 10)
-    cv2.imwrite("/home/pi/Documents/repo/Wall-E/Code_Pitop/Pictures/heading2.png", heading_img)
+    #cv2.imwrite("/home/pi/Documents/repo/Wall-E/Code_Pitop/Pictures/heading2.png", heading_img) """
 
     """ cv2.imshow("cam", heading_img)
     cv2.waitKey(0) """
@@ -197,5 +197,5 @@ def run(image):
 """ cam = Camera(format="OpenCV")
 frame = cam.get_frame() """
 
-frame = cv2.imread("/home/pi/Documents/repo/Wall-E/Code_Pitop/Pictures/opencv_frame_4.png")
-steering = run(frame)
+""" frame = cv2.imread("/home/pi/Documents/repo/Wall-E/Code_Pitop/Pictures/opencv_frame_4.png")
+steering = run(frame) """
