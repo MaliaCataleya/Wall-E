@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 from pitop import Camera
+import sys
 
 # Definieren der äußersten Punkte
 def make_coordinates(image, line_parameters):
@@ -72,13 +73,25 @@ def display_lines(image, lines):
         for line in lines:
             x1, y1, x2, y2 = line.reshape(4)
             try:
+                if x1 > (len(line_img) - 1):
+                    x1 = (len(line_img) - 1)
+                elif x1 < 0: 
+                    x1 = 0
+                if x2 > (len(line_img) - 1):
+                    x2 = (len(line_img) - 1)
+                elif x2 < 0: 
+                    x2 = 0
+                if y1 > (len(line_img[0]) - 1):
+                    y1 = (len(line_img[0]) - 1)
+                elif y1 < 0: 
+                    y1 = 0
+                if y2 > (len(line_img[0]) - 1):
+                    y2 = (len(line_img[0]) - 1)
+                elif y2 < 0: 
+                    y2 = 0
                 cv2.line(line_img, (x1, y1), (x2, y2), (255, 0, 0), 10)
             except:
-                #duct tape
-                #import sys
-                #if x1, x2, y1, y2 > sys.maxsize:
-                #x1 = sys.maxsize
-                print("Error: x1: ", x1, "x2: ", x2, "y1: ", y1, "y2: ", y2)
+                print("Error when trying to draw lines: x1: ", x1, "x2: ", x2, "y1: ", y1, "y2: ", y2)
     return line_img
 
 # Entfernen unwichtiger Inhalte
@@ -149,9 +162,11 @@ def run(image):
 
     # Ecken erkennen
     canny_img = canny(lane_img)
+    cv2.imwrite("/home/pi/Documents/repo/Wall-E/Code_Pitop/Pictures/canny2.png", canny_img)
 
     # unwichtige Inhalte abschneiden
     cropped_img = region_of_interest(canny_img, width, height)
+    cv2.imwrite("/home/pi/Documents/repo/Wall-E/Code_Pitop/Pictures/cropped2.png", cropped_img)
 
     # Ziehen der Linien
     lines = cv2.HoughLinesP(cropped_img, 1, np.pi/180, threshold=50, minLineLength=10, maxLineGap=10)
@@ -166,9 +181,12 @@ def run(image):
     steering_angle = calculate_steering_angle(x_offset, y_offset)
 
     # entkommentieren, wenn Linien bildlich angezeigt werden sollen --> sinnvoll beim Debuggen
-    """ line_img = display_lines(lane_img, averaged_lines)
+    line_img = display_lines(lane_img, averaged_lines)
+    cv2.imwrite("/home/pi/Documents/repo/Wall-E/Code_Pitop/Pictures/lines2.png", line_img)
     combo_img = cv2.addWeighted(lane_img, 0.8, line_img, 1, 1)
-    heading_img = display_heading_line(combo_img, steering_angle, (0, 0, 255), 10) """
+    cv2.imwrite("/home/pi/Documents/repo/Wall-E/Code_Pitop/Pictures/combo2.png", combo_img)
+    heading_img = display_heading_line(combo_img, steering_angle, (0, 0, 255), 10)
+    cv2.imwrite("/home/pi/Documents/repo/Wall-E/Code_Pitop/Pictures/heading2.png", heading_img)
 
     """ cv2.imshow("cam", heading_img)
     cv2.waitKey(0) """
@@ -177,5 +195,7 @@ def run(image):
 
 # entkommentieren, wenn nur image.py ausgeführt werden soll/ Wall-E nicht fahren soll
 """ cam = Camera(format="OpenCV")
-frame = cam.get_frame()
-steering = run(frame) """
+frame = cam.get_frame() """
+
+frame = cv2.imread("/home/pi/Documents/repo/Wall-E/Code_Pitop/Pictures/opencv_frame_4.png")
+steering = run(frame)
