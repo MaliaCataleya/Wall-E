@@ -15,6 +15,6 @@ If you want to change the network settings perform these steps:
 3. Run Visual Studio Code and open the repository which is located under "/home/pi/Documents/repo/Wall-E".
 4. Run rover.py which can be found in the Example folder by opening the script and clicking on the green arrow in the upper corner on the right hand side.
 5. Wall-E should now start to move according to the script if everything was set up correctly.
-6. If you place Wall-E on the fake road (can be found in the HdM AI Lab) you can then run car.py the same way you've already run rover.py and watch it perform the tasks described in the documentation which is located in the same folder as this README.
+6. If you place Wall-E on the fake road (can be found in the HdM AI Lab) you can then run car.py (drive folder) the same way you've already run rover.py and watch it perform the tasks described in the documentation which is located in the same folder as this README.
 
 Have fun and don't forget that the strip club is always an alternative :))
