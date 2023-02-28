@@ -14,7 +14,7 @@ If you want to change the network settings perform these steps:
 2. Access the pi-top Desktop by following either [steps](https://www.pi-top.com/start/getting-started-page23?hsCtaTracking=4a97a9b7-7ac7-48a5-a6dd-52b923a5e7c7%7C10d7fe60-a434-4cc4-b212-fe1340b101f3 "Open up pi-top Desktop").
 3. Run Visual Studio Code and open the repository which is located under "/home/pi/Documents/repo/Wall-E".
 4. Run rover.py which can be found in the Example folder by opening the script and clicking on the green arrow in the upper corner on the right hand side.
-5. Wall-E should now start to drive according to the script if everything was set up correctly.
+5. Wall-E should now start to move according to the script if everything was set up correctly.
 6. If you place Wall-E on the fake road (can be found in the HdM AI Lab) you can then run car.py the same way you've already run rover.py and watch it perform the tasks described in the documentation which is located in the same folder as this README.
 
 Have fun and don't forget that the strip club is always an alternative :))
